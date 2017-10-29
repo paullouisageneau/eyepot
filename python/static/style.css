@@ -1,0 +1,38 @@
+ body {
+	font-family: arial, verdana, sans-serif;
+	font-size: 12pt;
+	margin: 0;
+	padding: 0;
+	background-color: #FFFFFF;
+	color: #000000;
+}
+
+img {
+	vertical-align: middle;
+	max-width: 100%;
+	border: 0;
+}
+
+video {
+	display: block;
+	max-width: 100%;
+	margin-left: auto;
+	margin-right: auto;
+	border: 0;
+}
+
+#control {
+	margin-top: 1em;
+	margin-left: auto;
+	margin-right: auto;
+}
+#control img {
+	width: 5em;
+	height: 5em;
+	cursor: pointer;
+}
+#control td {
+	min-width: 5em;
+	min-height: 5em;
+	text-align: center;
+}

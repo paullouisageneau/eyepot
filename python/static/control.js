@@ -86,8 +86,7 @@ function initControl() {
 				evt.preventDefault();
 				changeControl(key, true);
 			};
-			element.onmouseup = function(evt) { 
-				evt.preventDefault();
+			element.onmouseup = function(evt) {
 				changeControl(key, false);
 			};
 			if('ontouchstart' in element) {

@@ -44,6 +44,7 @@ void setup()
     servos[i].write(offsetAngles[i] + angles[i]);
   }
 
+  // Activity LED
   pinMode(13, OUTPUT);
   digitalWrite(LED_BUILTIN, HIGH);
   delay(100);
@@ -52,7 +53,7 @@ void setup()
 
 void loop() 
 {
-  // Read commands on bluetooth serial
+  // Read commands on serial
   while(Serial.available())
   {
     char chr = (char)Serial.read();
@@ -63,24 +64,26 @@ void loop()
     }
     else if(inputString.length() > 0)
     {
+      // Parse command
       char cmd = toupper(inputString[0]);
       String param;
       int pos = 1;
       while(pos < inputString.length() && inputString[pos] == ' ') ++pos;
       param = inputString.substring(pos);
 
-      if(cmd >= '0' && cmd < '8')
+      // Execute command
+      if(cmd >= '0' && cmd < '8') // Servo
       {
         int i = int(cmd) - int('0');
         int angle = param.toInt();
         angles[i] = angle;
       }
-      else if(cmd == 'R')
+      else if(cmd == 'R')        // Reset
       {
         for(int i = 0; i < 8; ++i)
           angles[i] = defaultAngles[i];
       }
-      else if(cmd == 'C')
+      else if(cmd == 'C')        // Commit
       {
         for(int i = 0; i < 8; ++i)
           servos[i].write(offsetAngles[i] + angles[i]);

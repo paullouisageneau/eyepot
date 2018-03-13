@@ -19,14 +19,12 @@
     If not, see <http://www.gnu.org/licenses/>.
 '''
 
-import flask
 import control
 import controlthread
 
-from flask import request, Response, url_for
+from flask import Flask, request, Response, send_file, url_for
 
-
-app = flask.Flask(__name__)
+app = Flask(__name__)
 app.config.from_object(__name__)
 
 ctrl = control.Control('/dev/serial0', 9600)
@@ -35,7 +33,7 @@ ctrlThread.start()
 
 @app.route('/', methods=['GET'])
 def home():
-    return flask.send_file('static/index.html')
+    return send_file('static/index.html')
 
 @app.route('/move', methods=['POST'])
 def move():

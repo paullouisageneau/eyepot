@@ -96,17 +96,17 @@ function initStreaming() {
 			}
 		});
 	}});
-};
+}
 
 function startStream(selectedStream) {
 	Janus.log("Selected video id #" + selectedStream);
 	var body = { "request": "watch", id: parseInt(selectedStream) };
-	streaming.send({"message": body});
+	streaming.send({ "message": body });
 }
 
 function stopStream() {
 	var body = { "request": "stop" };
-	streaming.send({"message": body});
+	streaming.send({ "message": body });
 	streaming.hangup();
 }
 

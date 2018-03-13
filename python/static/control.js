@@ -41,7 +41,6 @@ function updateControl() {
 	var message = JSON.stringify({ 
 		'state': state,
 	});
-
 	var xhr = new XMLHttpRequest();
 	xhr.open('POST', '/move');
 	xhr.setRequestHeader('Content-Type', 'application/json');

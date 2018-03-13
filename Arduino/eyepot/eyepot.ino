@@ -28,7 +28,6 @@ const int defaultAngles[8] = { 135, 135, 45, 45, 90, 90, 90, 90 };
 Servo servos[8];
 unsigned int angles[8];
 
-unsigned long oldmicros = 0L;
 String inputString = "";
 
 void setup()

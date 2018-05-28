@@ -77,7 +77,7 @@ function initStreaming() {
 					},
 					onremotestream: function(stream) {
 						Janus.debug("Got a remote stream");
-						videoElement = document.getElementById("video");
+						var videoElement = document.getElementById("video");
 						Janus.attachMediaStream(videoElement, stream);
 					},
 					oncleanup: function() {

@@ -47,6 +47,22 @@ function updateControl() {
 	xhr.send(message);
 }
 
+// Send current control order to robot
+function updateBattery() {
+	var xhr = new XMLHttpRequest();
+	xhr.open('GET', '/battery');
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState === 4) {
+		      	var result = JSON.parse(xhr.response);
+			var level = document.getElementById('battery_level');
+			var bar = document.getElementById('battery_bar');
+			bar.style.width = result.level + '%';
+			level.innerHTML = result.level + '%';
+		}
+	};
+	xhr.send();
+}
+
 // Callback for key down
 function handleKeyDown(evt) {
 	switch (evt.keyCode) {
@@ -100,5 +116,11 @@ function initControl() {
 	document.onkeyup   = handleKeyUp;
 	
 	updateControl();
+
+	function loopUpdate() {
+		updateBattery();
+		setTimeout(loopUpdate, 5000);
+	}
+	loopUpdate();
 }
 

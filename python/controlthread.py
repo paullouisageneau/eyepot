@@ -13,7 +13,7 @@
     WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU Affero General Public License for more details.
-                                                                        
+
     You should have received a copy of the GNU Affero General Public
     License along with Eyepot.
     If not, see <http://www.gnu.org/licenses/>.
@@ -23,28 +23,27 @@ import threading
 import time
 
 class ControlThread(threading.Thread):
-	def __init__(self, ctrl):
-		super().__init__()
-		self.state = "idle"
-		self.ctrl = ctrl
-		
-	def run(self):
-		while self.state != "stop":
-			if self.state == "idle":
-				self.ctrl.reset()
-				self.ctrl.commit()
-				time.sleep(0.1)
-			elif self.state == "front":
-				self.ctrl.translateFront()
-			elif self.state == "back":
-				self.ctrl.translateBack()
-			elif self.state == "left":
-				self.ctrl.translateLeft()
-			elif self.state == "right":
-				self.ctrl.translateRight()
-			elif self.state == "rotl":
-				self.ctrl.rotateLeft()
-			elif self.state == "rotr":
-				self.ctrl.rotateRight()
-			else:
-				self.state = "idle"
+    def __init__(self, ctrl):
+        super().__init__()
+        self.state = "idle"
+        self.ctrl = ctrl
+
+    def run(self):
+        while self.state != "stop":
+            if self.state == "idle":
+                self.ctrl.idle();
+            elif self.state == "front":
+                self.ctrl.translateFront()
+            elif self.state == "back":
+                self.ctrl.translateBack()
+            elif self.state == "left":
+                self.ctrl.translateLeft()
+            elif self.state == "right":
+                self.ctrl.translateRight()
+            elif self.state == "rotl":
+                self.ctrl.rotateLeft()
+            elif self.state == "rotr":
+                self.ctrl.rotateRight()
+            else:
+                self.state = "idle"
+

@@ -1,7 +1,7 @@
-/* 
+/*
  * Copyright (C) 2017 by Paul-Louis Ageneau
  * paul-louis (at) ageneau (dot) org
- * 
+ *
  * This file is part of Eyepot.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -22,8 +22,15 @@
 
 // ---------- Pin setup ----------
 const int servoPins[8] = {5, 6, 7, 8, 9, 10, 11, 12};
-const int offsetAngles[8] = { 0, 0, -10, -5, -10, 5, 10, -5 };
+const int offsetAngles[8] = { -5, 0, -10, -5, -10, 5, 10, -5 };
 const int defaultAngles[8] = { 135, 135, 45, 45, 90, 90, 90, 90 };
+
+const int batteryProbePin = A0;
+const long batteryProbeFactor = 10200L;
+const int batteryVoltageMin = 6300;
+const int batteryVoltageMax = 8300;
+
+int batteryProbeCount = 0;
 
 Servo servos[8];
 unsigned int angles[8];
@@ -31,7 +38,7 @@ unsigned int angles[8];
 String inputString = "";
 
 void setup()
-{  
+{
   // Init serial
   Serial.begin(9600);
 
@@ -50,13 +57,35 @@ void setup()
   digitalWrite(LED_BUILTIN, LOW);
 }
 
-void loop() 
+void loop()
 {
+  int batteryVoltage = int(long(analogRead(batteryProbePin))*batteryProbeFactor/1024L);  // mV
+  int batteryPercent = constrain(map(batteryVoltage, batteryVoltageMin, batteryVoltageMax, 0, 100), 0, 100);
+
+  // Exit on low battery
+  if(batteryPercent == 0)
+  {
+    ++batteryProbeCount;
+    if(batteryProbeCount == 100)
+    {
+      Serial.println("B 0");
+      for(int i = 0; i < 8; ++i)
+      {
+          servos[i].detach();
+      }
+      exit(0);
+    }
+    batteryPercent = 1;
+  }
+  else {
+    batteryProbeCount = 0;
+  }
+
   // Read commands on serial
   while(Serial.available())
   {
     char chr = (char)Serial.read();
-    if(chr != '\n') 
+    if(chr != '\n')
     {
       if(chr != '\r')
         inputString+= chr;
@@ -87,9 +116,14 @@ void loop()
         for(int i = 0; i < 8; ++i)
           servos[i].write(offsetAngles[i] + angles[i]);
       }
-      
+      else if(cmd == 'B')        // Battery
+      {
+        Serial.print("B ");
+        Serial.print(batteryPercent);
+        Serial.println();
+      }
+
       inputString = "";
     }
   }
 }
-

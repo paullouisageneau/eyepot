@@ -13,7 +13,7 @@
     WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU Affero General Public License for more details.
-                                                                        
+
     You should have received a copy of the GNU Affero General Public
     License along with Eyepot.
     If not, see <http://www.gnu.org/licenses/>.
@@ -21,11 +21,41 @@
 
 import serial
 import time
+import threading
 
-class Control:
+class Control(threading.Thread):
 
     def __init__(self, device = '/dev/serial0', baudrate = 9600):
-        self.ser = serial.Serial(device, baudrate)
+        super().__init__()
+        self.ser = serial.Serial(device, baudrate, timeout = 1)
+        self.battery_level = 100
+
+    def run(self):
+        while self.ser.is_open:
+            self.send('B')
+            while True:
+                command = self.read()
+                if not command:
+                    break
+                self.process(command)
+
+    def reset(self):
+        self.send('R')
+
+    def commit(self):
+        self.send('C')
+
+    def send(self, command):
+        self.ser.write((command + '\n').encode())
+
+    def read(self):
+        return self.ser.readline().decode()
+
+    def process(self, command):
+        c = command[0]
+        arg = command[1:].strip()
+        if c == 'B':
+            self.battery_level = int(arg)
 
     # leg angle > 0 => down
     def leg(self, i, angle):
@@ -40,15 +70,11 @@ class Control:
             angle = min(max(angle, 0), 180)
             self.send('{:s}{:d}'.format(chr(ord('0')+servo), int(angle)))
 
-    def reset(self):
-        self.send('R')
+    def idle(self):
+        self.reset()
+        self.commit()
+        time.sleep(0.1)
 
-    def commit(self):
-        self.send('C')
-
-    def send(self, command):
-        self.ser.write((command + '\n').encode())
- 
     def translateFront(self, f = 20):
         self.walk(f, 0, 0)
 
@@ -60,7 +86,7 @@ class Control:
 
     def translateLeft(self, f = 20):
         self.walk(0, -f, 0)
-    
+
     def rotateRight(self, f = 20):
         #self._pattern1(20, 0, [30, 30, -30, -30], [0, 3, 1, 2], 0.2)
         self.walk(0, 0, f)
@@ -68,7 +94,7 @@ class Control:
     def rotateLeft(self, f = 20):
         #self._pattern1(20, 0, [-30, -30, 30, 30], [2, 1, 3, 0], 0.2)
         self.walk(0, 0, -f)
-   
+
     def walk(self, forward, sideward, rotation):
         fu = [1, 1, 1, 1]
         su = [-1, 1, 1, -1]
@@ -95,13 +121,13 @@ class Control:
 
     def _pattern2(self, ldown, lup, hangles, step):
         offsets = [5-a/2 for a in hangles]
-        
+
         self.leg(0, lup)
         self.leg(1, ldown)
         self.leg(2, ldown)
         self.leg(3, lup)
         self.commit()
-        time.sleep(step/2)  
+        time.sleep(step/2)
 
         self.hip(0, offsets[0] + hangles[0])
         self.hip(1, offsets[1])
@@ -113,7 +139,7 @@ class Control:
         self.leg(0, ldown)
         self.leg(3, ldown)
         self.commit()
-        time.sleep(step/2)  
+        time.sleep(step/2)
 
         self.hip(0, offsets[0])
         self.hip(1, offsets[1] - hangles[1])

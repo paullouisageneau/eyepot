@@ -9,26 +9,33 @@
     <script src="static/adapter.min.js"></script>
     <script src="static/streaming.js"></script>
     <script src="static/control.js"></script>
+    <script src="static/main.js"></script>
   </head>
   <body>
     <div id="video_container">
-      <video id="video" autoplay></video>
+      <video id="video" autoplay muted></video>
+    </div>
+    <div id="battery_container">
+      <div id="battery_out">
+        <div id="battery_bar">
+	  <span id="battery_level"></span>
+        </div>
+      </div>
     </div>
     <div id="control_container">
       <table id = "control">
         <tr>
-          <td id="arrow_rotate_left"><img src="static/arrow_rotate_left.png" alt="rotate left"></td>
-          <td id="arrow_up"><img src="static/arrow_up.png" alt="up"></td>
-          <td id="arrow_rotate_right"><img src="static/arrow_rotate_right.png" alt="rotate right"></td>
+          <td id="arrow_rotate_left"><img src="static/arrow_rotate_left.png"></td>
+          <td id="arrow_up"><img src="static/arrow_up.png"></td>
+          <td id="arrow_rotate_right"><img src="static/arrow_rotate_right.png"></td>
         </tr>
         <tr>
-          <td id="arrow_left"><img src="static/arrow_left.png" alt="left"></td>
-          <td id="arrow_down"><img src="static/arrow_down.png" alt="down"></td>
-          <td id="arrow_right"><img src="static/arrow_right.png" alt="right"></td>
+          <td id="arrow_left"><img src="static/arrow_left.png"></td>
+          <td id="arrow_down"><img src="static/arrow_down.png"></td>
+          <td id="arrow_right"><img src="static/arrow_right.png"></td>
         </tr>
       </table>
     </div>
-    <script>document.body.onload = function() { initStreaming(); initControl(); };</script>
   </body>
 </html>
 

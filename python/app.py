@@ -13,7 +13,7 @@
     WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU Affero General Public License for more details.
-                                                                        
+
     You should have received a copy of the GNU Affero General Public
     License along with Eyepot.
     If not, see <http://www.gnu.org/licenses/>.
@@ -22,12 +22,13 @@
 import control
 import controlthread
 
-from flask import Flask, request, Response, send_file, url_for
+from flask import Flask, request, Response, send_file, url_for, jsonify
 
 app = Flask(__name__)
 app.config.from_object(__name__)
 
 ctrl = control.Control('/dev/serial0', 9600)
+ctrl.start()
 ctrlThread = controlthread.ControlThread(ctrl)
 ctrlThread.start()
 
@@ -40,6 +41,11 @@ def move():
 	data = request.get_json()
 	ctrlThread.state = data["state"] if data["state"] else 'idle'
 	return Response('', 200)
+
+@app.route('/battery', methods=['GET'])
+def battery():
+    return jsonify({"level": ctrl.battery_level})
+
 
 if __name__ == '__main__':
 	app.run(host = '0.0.0.0', port = 8080)

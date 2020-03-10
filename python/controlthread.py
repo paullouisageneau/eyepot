@@ -29,6 +29,9 @@ class ControlThread(threading.Thread):
         self.ctrl = ctrl
 
     def run(self):
+        self.ctrl.rotateLeft(10)
+        self.ctrl.rotateRight(10)
+
         while self.state != "stop":
             if self.state == "idle":
                 self.ctrl.idle();

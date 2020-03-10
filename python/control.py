@@ -75,23 +75,23 @@ class Control(threading.Thread):
         self.commit()
         time.sleep(0.1)
 
-    def translateFront(self, f = 20):
+    def translateFront(self, f = 25):
         self.walk(f, 0, 0)
 
-    def translateBack(self, f = 20):
+    def translateBack(self, f = 25):
         self.walk(-f, 0, 0)
 
-    def translateRight(self, f = 20):
+    def translateRight(self, f = 25):
         self.walk(0, f, 0)
 
-    def translateLeft(self, f = 20):
+    def translateLeft(self, f = 25):
         self.walk(0, -f, 0)
 
-    def rotateRight(self, f = 20):
+    def rotateRight(self, f = 25):
         #self._pattern1(20, 0, [30, 30, -30, -30], [0, 3, 1, 2], 0.2)
         self.walk(0, 0, f)
 
-    def rotateLeft(self, f = 20):
+    def rotateLeft(self, f = 25):
         #self._pattern1(20, 0, [-30, -30, 30, 30], [2, 1, 3, 0], 0.2)
         self.walk(0, 0, -f)
 
@@ -100,7 +100,7 @@ class Control(threading.Thread):
         su = [-1, 1, 1, -1]
         ru = [1, 1, -1, -1]
         v = [f*forward + s*sideward + r*rotation for f, s, r in zip(fu, su, ru)]
-        self._pattern2(20, -5, v, 0.2)
+        self._pattern2(30, 5, v, 0.15)
 
     def _pattern1(self, ldown, lup, hangles, legs, step):
         for i in legs:
@@ -120,7 +120,7 @@ class Control(threading.Thread):
             time.sleep(step/2)
 
     def _pattern2(self, ldown, lup, hangles, step):
-        offsets = [5-a/2 for a in hangles]
+        offsets = [-a/4 for a in hangles]
 
         self.leg(0, lup)
         self.leg(1, ldown)
